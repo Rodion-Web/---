@@ -47,3 +47,17 @@ app.post('/reserve', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+app.get('/reservations', (req, res) => {
+  if (!fs.existsSync(DATA_FILE)) return res.json([]);
+
+  const workbook = XLSX.readFile(DATA_FILE);
+  const sheet = workbook.Sheets['Reservations'];
+  const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+  // Удаляем заголовок
+  const reservations = data.slice(1).map(([name, table, chair]) => ({
+    name, table, chair
+  }));
+
+  res.json(reservations);
+});
