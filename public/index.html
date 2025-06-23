@@ -131,6 +131,21 @@
 
     tablesContainer.appendChild(wrapper);
   }
+  // Загрузка данных о бронировании при загрузке страницы
+window.addEventListener('DOMContentLoaded', () => {
+  fetch('/reservations')
+    .then(res => res.json())
+    .then(data => {
+      data.forEach(({ name, table, chair }) => {
+        const selector = `[data-table="${table}"][data-chair="${chair}"]`;
+        const chairEl = document.querySelector(selector);
+        if (chairEl) {
+          chairEl.classList.add('booked');
+          chairEl.dataset.name = name;
+        }
+      });
+    });
+});
 </script>
 
 
